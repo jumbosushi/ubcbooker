@@ -31,7 +31,7 @@ module Ubcbooker
   # Maybe check by seeing if the CWL link pops up after GET
 
   # Do login for UBC CWL system
-  def login_ubc_cwl(login_page)
+  def self.login_ubc_cwl(login_page)
     username_feild = login_page.form.field_with(:name => "j_username")
     username_feild.value = username
     password_field = login_page.form.field_with(:name => "j_password")
