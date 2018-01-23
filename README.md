@@ -22,11 +22,11 @@ Or install it yourself as:
 
 ```
 # Call help
-ubcbooker -h
+$ ubcbooker -h
 # Book Computer Science project rooms
-ubcbooker cs
+$ ubcbooker cs
 # Book Sauder project rooms
-ubcbooker sauder
+$ ubcbooker sauder
 ```
 
 ## Development
