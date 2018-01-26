@@ -2,7 +2,6 @@ require "pry"
 require "mechanize"
 require "io/console" # For handling password
 
-
 module Ubcbooker
   # Stop at 7:14
   # TODO: before 0.1
