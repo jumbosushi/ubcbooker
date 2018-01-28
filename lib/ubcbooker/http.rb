@@ -3,7 +3,7 @@ module Ubcbooker
     attr_accessor :agent
 
     def initialize
-      self.agent = Mechanize.new do |agent|
+      @agent = Mechanize.new do |agent|
         agent.user_agent_alias = "Linux Mozilla"
       end
     end
@@ -19,12 +19,12 @@ module Ubcbooker
       return redirect_page.form.submit
     end
 
-    def login(cli)
+    def login(username, password)
       puts "Requesting the page ..."
       binding.pry
-      self.agent.get("https://my.cs.ubc.ca/docs/project-rooms-and-dlc") do |page|
+      @agent.get("https://my.cs.ubc.ca/docs/project-rooms-and-dlc") do |page|
         login_page = page.link_with(text: "CWL Login Redirect").click
-        login_ubc_cwl(cli.username, cli.password, login_page)
+        login_ubc_cwl(username, password, login_page)
       end
     end
   end

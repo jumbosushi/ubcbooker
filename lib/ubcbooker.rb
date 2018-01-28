@@ -1,6 +1,7 @@
 require "pry"
 require "mechanize"
 require "io/console" # For handling password
+require "yaml"
 
 module Ubcbooker
   # Stop at 7:14
@@ -18,5 +19,6 @@ module Ubcbooker
 end
 
 require "ubcbooker/version"
+require "ubcbooker/config"
 require "ubcbooker/http"
 require "ubcbooker/cli"
