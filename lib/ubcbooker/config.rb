@@ -3,7 +3,7 @@ module Ubcbooker
     attr_accessor :account
 
     def initialize
-      @config_path = File.dirname(File.expand_path(__FILE__)) + "/config.yml"
+      @config_path = File.expand_path("../config.yml", __FILE__)
       @account = YAML.load_file(@config_path)
     end
 
