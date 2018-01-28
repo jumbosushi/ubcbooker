@@ -12,7 +12,14 @@ module Ubcbooker
       @account["password"] = password
       new_yml = YAML.dump(@account)
       open(@config_path, "w") { |f| f.write(new_yml) }
-      @account = YAML.load_file("./config.yaml")
+      @account = YAML.load_file("./config.yml")
+    end
+
+    def print_supported_departments
+      puts "Supported department options in #{Ubcbooker::VERSION}:"
+      SUPPORTED_DEPARTMENTS.each do |d|
+        puts "    -  #{d}"
+      end
     end
 
     def defined?

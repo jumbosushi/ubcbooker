@@ -15,7 +15,6 @@ module Ubcbooker
       password_field = login_page.form.field_with(name: "j_password")
       password_field.value = password
       redirect_page = login_page.form.submit
-      binding.pry
       return redirect_page.form.submit
     end
 
