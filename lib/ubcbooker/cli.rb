@@ -27,22 +27,31 @@ module Ubcbooker
 
       OptionParser.new do |parser|
         parser.on("-d", "--department <DEPARTMENT>", "Specify which department to book rooms from") do |v|
-          options[:department] = v
+          if SUPPORTED_DEPARTMENTS.include?(v)
+            options[:department] = v
+          else
+            raise Ubcbooker::Error::UnsupportedDepartment.new(v)
+          end
         end
+
         parser.on("-h", "--help", "Show this help message") do ||
           puts parser
           exit(0)
         end
+
         parser.on("-l", "--list", "List supported departments") do ||
           @app_config.print_supported_departments
           exit(0)
         end
+
         parser.on("-s", "--save", "Save username and password") do |v|
           options[:save]
         end
+
         parser.on("-u", "--update", "Update username and password") do |v|
           ask_config
         end
+
         parser.on("-v", "--version", "Show version") do ||
           puts Ubcbooker::VERSION
           exit(0)
@@ -55,12 +64,15 @@ module Ubcbooker
     def get_options
       begin
         return parse_options
+      rescue Ubcbooker::Error::UnsupportedDepartment => e
+        puts "\"#{e.department}\" is an unsupported department\n".red <<
+          "Check supported departments with `ubcbooker -l`".brown
       rescue OptionParser::MissingArgument
         puts "Missing a department option\n".red <<
           "Try calling with `ubcbooker -d <DEPARTMENT>`\n".brown <<
           "Check supported departments with `ubcbooker -l`".brown
-        exit(1)
       end
+      exit(1)
     end
 
     def start
