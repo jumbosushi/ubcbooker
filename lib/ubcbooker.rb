@@ -8,7 +8,7 @@ module Ubcbooker
   # TODO: before 0.1
   # - TDD
   # - Catch when login fails
-  # - Selection with arrow keys
+  # - Selection with arrow keys (tty-prompt)
   SUPPORTED_DEPARTMENTS = [
     "cs",
     "sauder",

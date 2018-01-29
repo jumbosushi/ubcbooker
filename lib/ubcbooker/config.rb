@@ -12,7 +12,7 @@ module Ubcbooker
       @account["password"] = password
       new_yml = YAML.dump(@account)
       open(@config_path, "w") { |f| f.write(new_yml) }
-      @account = YAML.load_file("./config.yml")
+      @account = YAML.load_file(@config_path)
     end
 
     def print_supported_departments

@@ -9,9 +9,9 @@ module Ubcbooker
     end
 
     def ask_config
-      print "CWL username: "
+      print "Your CWL username: "
       username = gets.chomp
-      print "CWL password: "
+      print "Your CWL password: "
       # Hide the password input
       password = STDIN.noecho(&:gets).chomp
       @app_config.write(username, password)
