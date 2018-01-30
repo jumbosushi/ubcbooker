@@ -9,10 +9,10 @@ module Ubcbooker
   # - TDD
   # - Catch when login fails
   # - Selection with arrow keys (tty-prompt)
-  SUPPORTED_DEPARTMENTS = [
-    "cs",
-    "sauder",
-  ]
+  BOOKING_URL = {
+    cs: "https://my.cs.ubc.ca/docs/project-rooms-and-dlc",
+    sauder_ugrad: "https://booking.sauder.ubc.ca/ugr/cwl-login",
+  }
 end
 
 require "ubcbooker/version"

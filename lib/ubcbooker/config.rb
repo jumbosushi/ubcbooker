@@ -17,7 +17,7 @@ module Ubcbooker
 
     def print_supported_departments
       puts "Supported department options in #{Ubcbooker::VERSION}:"
-      SUPPORTED_DEPARTMENTS.each do |d|
+      BOOKING_URL.keys.each do |d|
         puts "    -  #{d}"
       end
     end

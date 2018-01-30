@@ -1,11 +1,11 @@
 module Ubcbooker
   class CLI
-    attr_accessor :username, :password
+    attr_accessor :options
 
     # What happens if I'm already logged in here?
     # Maybe check by seeing if the CWL link pops up after GET
     def initialize
-      @app_config = Ubcbooker::Config.new
+      @config = Ubcbooker::Config.new
     end
 
     def ask_config
@@ -14,20 +14,25 @@ module Ubcbooker
       print "Your CWL password: "
       # Hide the password input
       password = STDIN.noecho(&:gets).chomp
-      @app_config.write(username, password)
+      @config.write(username, password)
       puts
+    end
+
+    def is_valid_department(d)
+      return BOOKING_URL.keys.include?(d.to_sym)
     end
 
     def parse_options
       # This will hold the options we parse
       options = {
         save: false,
+        update: false,
         department: nil,
       }
 
       OptionParser.new do |parser|
         parser.on("-d", "--department <DEPARTMENT>", "Specify which department to book rooms from") do |v|
-          if SUPPORTED_DEPARTMENTS.include?(v)
+          if is_valid_department(v)
             options[:department] = v
           else
             raise Ubcbooker::Error::UnsupportedDepartment.new(v)
@@ -40,16 +45,16 @@ module Ubcbooker
         end
 
         parser.on("-l", "--list", "List supported departments") do ||
-          @app_config.print_supported_departments
+          @config.print_supported_departments
           exit(0)
         end
 
         parser.on("-s", "--save", "Save username and password") do |v|
-          options[:save]
+          options[:save] = true
         end
 
         parser.on("-u", "--update", "Update username and password") do |v|
-          ask_config
+          options[:update] = true
         end
 
         parser.on("-v", "--version", "Show version") do ||
@@ -76,12 +81,13 @@ module Ubcbooker
     end
 
     def start
-      options = get_options
-      if !@app_config.defined?
+      @options = get_options
+      if !@config.defined? || @options[:update]
         ask_config
       end
-      binding.pry
-      Ubcbooker::Http.new.login(@app_config.username, @app_config.password)
+
+      @client = Ubcbooker::Http.new(@config.username, @config.password)
+      @client.book(@options[:department])
     end
   end
 end
