@@ -80,14 +80,26 @@ module Ubcbooker
       exit(1)
     end
 
+    def get_scraper(department)
+      case department
+      when "cs"
+        return Ubcbooker::Scraper::Cs
+      when "sauder_ugrad"
+        return Ubcbooker::Scraper::SauderUgrad
+      else
+        raise Ubcbooker::Error::UnsupportedDepartment
+      end
+
+    end
+
     def start
       @options = get_options
       if !@config.defined? || @options[:update]
         ask_config
       end
 
-      @client = Ubcbooker::Http.new(@config.username, @config.password)
-      @client.book(@options[:department])
+      scraper_client = get_scraper(@options[:department])
+      scraper_client.book
     end
   end
 end

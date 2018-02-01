@@ -1,3 +1,5 @@
+require_relative "base_scraper"
+
 module Ubcbooker
   module Scraper
     class CS < Ubcbooker::Scraper::BaseScraper

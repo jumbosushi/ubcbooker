@@ -1,4 +1,4 @@
-require "scrapers/cs"
+require_relative "scrapers/cs.rb"
 
 module Ubcbooker
   class Http
