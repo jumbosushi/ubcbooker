@@ -1,8 +1,6 @@
-require_relative "base_scraper"
-
 module Ubcbooker
   module Scraper
-    class CS < Ubcbooker::Scraper::BaseScraper
+    class CS < BaseScraper
       def book
         booking_url = BOOKING_URL[:cs]
         booking_page = login(booking_url)
