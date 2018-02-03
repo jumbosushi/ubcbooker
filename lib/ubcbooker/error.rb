@@ -7,5 +7,8 @@ module Ubcbooker
         super
       end
     end
+
+    class InvalidRoom < StandardError
+    end
   end
 end

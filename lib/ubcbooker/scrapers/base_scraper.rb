@@ -1,7 +1,7 @@
 module Ubcbooker
   module Scraper
     class BaseScraper
-      def initialize(username, passwod)
+      def initialize(username, password)
         @agent = Mechanize.new do |agent|
           agent.user_agent_alias = "Linux Mozilla"
         end
