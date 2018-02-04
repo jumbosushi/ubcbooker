@@ -10,5 +10,8 @@ module Ubcbooker
 
     class InvalidRoom < StandardError
     end
+
+    class LoginFailed < StandardError
+    end
   end
 end
