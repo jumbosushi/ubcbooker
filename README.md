@@ -20,6 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
+Rename `sample.yml` to `config.yml` with correct auth info to get started
+
 ```
 # Call help
 $ ubcbooker -h
