@@ -1,6 +1,7 @@
 .DS_Store
 *.gem
 *.rbc
+lib/ubcbooker/config.yml
 /.config
 /coverage/
 /InstalledFiles
