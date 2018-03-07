@@ -32,7 +32,7 @@ module Ubcbooker
         return false
       end
       return /^\d\d\/\d\d$/.match?(d) &&          # Match format
-             !date.saturday? && !date.sunday? &&  # Not on weekend
+             date.weekday? &&  # Not on weekend
              !date.past? &&                       # Not in the past
              (date < Date.today + 7)              # Within a week
     end
