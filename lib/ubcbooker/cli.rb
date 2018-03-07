@@ -22,14 +22,19 @@ module Ubcbooker
       return BOOKING_URL.keys.include?(d.to_sym)
     end
 
+    # TODO: Return error msg explaining this
     def is_valid_date(d)
+      date = nil
       begin
-        DateTime.parse(d)
+        date = Date.parse(d)
         # Expect MM/DD
-        return /^\d\d\/\d\d$/.match?(d)
       rescue ArgumentError
         return false
       end
+      return /^\d\d\/\d\d$/.match?(d) &&          # Match format
+             !date.saturday? && !date.sunday? &&  # Not on weekend
+             !date.past? &&                       # Not in the past
+             (date < Date.today + 7)              # Within a week
     end
 
     def is_valid_time(t)
