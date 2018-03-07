@@ -22,20 +22,60 @@ module Ubcbooker
       return BOOKING_URL.keys.include?(d.to_sym)
     end
 
+    def is_valid_date(d)
+      begin
+        DateTime.parse(d)
+        # Expect MM/DD
+        return /^\d\d\/\d\d$/.match?(d)
+      rescue ArgumentError
+        return false
+      end
+    end
+
+    def is_valid_time(t)
+      if /^\d\d:\d\d-\d\d:\d\d$/.match?(t)
+        times = t.split("-")
+        times.each do |time|
+          begin
+            DateTime.parse(time)
+            # Expect HH:MM
+          rescue ArgumentError
+            return false
+          end
+        end
+        return true
+      else
+        return false
+      end
+    end
+
     def parse_options
       # This will hold the options we parse
       options = {
         save: false,
         update: false,
+        date: nil,
+        time: nil,
         department: nil,
       }
 
+      # TODO: Change department to building
       OptionParser.new do |parser|
-        parser.on("-d", "--department <DEPARTMENT>", "Specify which department to book rooms from") do |v|
+        parser.on("-b", "--building [BUILDING]", String,
+                  "Specify which department to book rooms from") do |v|
           if is_valid_department(v)
             options[:department] = v
           else
             raise Ubcbooker::Error::UnsupportedDepartment.new(v)
+          end
+        end
+
+        parser.on("-d", "--date [DATE]", String,
+                  "Specify date to book rooms for (MM/DD)") do |v|
+          if is_valid_date(v)
+            options[:date] = v
+          else
+            raise Ubcbooker::Error::UnsupportedDate.new(v)
           end
         end
 
@@ -51,6 +91,15 @@ module Ubcbooker
 
         parser.on("-s", "--save", "Save username and password") do |v|
           options[:save] = true
+        end
+
+        parser.on("-t", "--time [TIME]", String,
+                  "Specify time to book rooms for (HH:MM-HH:MM)") do |v|
+          if is_valid_time(v)
+            options[:time] = v
+          else
+            raise Ubcbooker::Error::UnsupportedTime.new(v)
+          end
         end
 
         parser.on("-u", "--update", "Update username and password") do |v|
@@ -102,7 +151,7 @@ module Ubcbooker
       @client = get_scraper(@options[:department],
                             @config.account["username"],
                             @config.account["password"])
-      @client.book
+      @client.book(@options)
     end
   end
 end
