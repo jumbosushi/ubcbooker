@@ -86,6 +86,9 @@ module Ubcbooker
 
         parser.on("-h", "--help", "Show this help message") do ||
           puts parser
+          puts
+          puts "ex. Book a project room in CS on March 3th for 11am to 1pm"
+          puts "    >ubcbooker -b cs -d 03/05 -t 11:00-13:00"
           exit(0)
         end
 
@@ -153,10 +156,13 @@ module Ubcbooker
     def start
       @options = get_options
       ask_config if !@config.defined? || @options[:update]
+      exit(0) if @options[:update]
+
       @client = get_scraper(@options[:department],
                             @config.account["username"],
                             @config.account["password"])
       @client.book(@options)
+      puts "SUCCESS! ROOM BOOKED"
     end
   end
 end

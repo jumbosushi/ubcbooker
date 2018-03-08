@@ -2,9 +2,10 @@ module Ubcbooker
   module Scraper
     class Cs < BaseScraper
       CS_ROOM_BASE_URL = "https://my.cs.ubc.ca/space/"
-      CS_ROOMS = ["x139", "x141", "x151", "x153", # 1st Floor
-                  "x237", "x239", "x241",         # 2nd Floor
-                  "x337", "x339", "x341"]         # 3rd Floor
+      CS_BOOK_URL = "https://my.cs.ubc.ca/node/add/pr-booking"
+      CS_ROOMS = ["X139", "X141", "X151", "X153", # 1st Floor
+                  "X237", "X239", "X241",         # 2nd Floor
+                  "X337", "X339", "X341"]         # 3rd Floor
 
       # TODO: Turn today_date into instance var
       def get_room_cal_url(book_date, room)
@@ -28,15 +29,30 @@ module Ubcbooker
         booking_url = BOOKING_URL[:cs]
         book_date = Date.parse(options[:date])
         book_slot = get_time_slot(options[:time])
-        booking_page = login(booking_url)
-        room_url = get_room_cal_url(book_date, "x139")
+        login(booking_url)
+        room_url = get_room_cal_url(book_date, "X139")
         room_page = @agent.get(room_url)
         slot_booked = get_slot_booked(room_page, book_date)
 
         if !is_slot_booked(slot_booked, book_slot)
-          # TODO
-          # Booking form submission
+          booking_form = @agent.get(CS_BOOK_URL).forms[1]
+          booking_form['title'] = "STUDY SESH"
+          booking_form.field_with(name: 'field_space_project_room[und]').options[1].click
+          # TODO: Choose the first available room
+          # options.each do |o|
+            # if o.text.include?("X139")
+              # o.click
+            # end
+          # end
+          booking_form['field_date[und][0][value][date]'] = "2018/03/08"
+          booking_form['field_date[und][0][value][time]'] = "10:00am"
+          booking_form['field_date[und][0][value2][date]'] = "2018/03/08"
+          booking_form['field_date[und][0][value2][time]'] = "11:00am"
+
           binding.pry
+          # booking_form.submit
+        else
+          # Booked message
         end
       end
 
