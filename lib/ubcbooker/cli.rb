@@ -2,8 +2,6 @@ module Ubcbooker
   class CLI
     attr_accessor :options
 
-    # What happens if I'm already logged in here?
-    # Maybe check by seeing if the CWL link pops up after GET
     def initialize
       @config = Ubcbooker::Config.new
       @options = nil
