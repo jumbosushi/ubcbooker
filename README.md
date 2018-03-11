@@ -23,6 +23,16 @@ And then execute:
 ## Usage
 
 ```
+# Book a room in CS with the name 'Study Group' from 11am to 1pm on March 5th
+
+$ ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00
+```
+
+When you first run the command it will ask for your CWL account auth info. This is saved locally within the gem as `config.yml`. You can look at [sample.yml](https://github.com/jumbosushi/ubcbooker/blob/master/lib/ubcbooker/sample.yml) to understand what it will look like.
+
+Run `ubcbooker -u` to update the CWL auth info.
+
+```
 $ ubcbooker --help
 
 Usage: ubcbooker [options]
@@ -39,7 +49,7 @@ ex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'
     $> ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00
 ```
 
-Currently this app supports project rooms in cs (Commputer Science).
+Currently this app supports project rooms in cs (Commputer Science). Run `ubcbooker -l` to check the latest supported departments.
 
 Feel free to send a PR that supports your department's rooms.
 
