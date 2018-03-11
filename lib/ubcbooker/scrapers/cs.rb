@@ -46,8 +46,8 @@ module Ubcbooker
         booking_form["field_date[und][0][value][time]"] = time_to_ampm(book_slot.min)
         booking_form["field_date[und][0][value2][date]"] = book_date_str
         booking_form["field_date[und][0][value2][time]"] = time_to_ampm(book_slot.max)
-        spinner.success("Done!")
         booking_form.submit
+        spinner.success("Done!")
       end
 
       # Select the form otpion with right room id
@@ -115,7 +115,7 @@ module Ubcbooker
       def is_slot_booked(slot_booked, book_slot)
         booked = false
         slot_booked.each do |s|
-          if s.include?(book_slot)
+          if s.include?(book_slot.min) || s.include?(book_slot.max)
             booked = true
           end
         end
