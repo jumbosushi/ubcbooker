@@ -9,6 +9,7 @@ module Ubcbooker
 
       def book(options)
         login
+        title = options[:name]
         book_date = Date.parse(options[:date])
         book_slot = get_time_slot(options[:time])
 
@@ -18,6 +19,7 @@ module Ubcbooker
         if room_pages.any?
           # TODO: If -c CHOOSE option then run CLI-UI here
           room = room_pages.first  # Choose the first available room
+          submit_booking(room, title, book_date, book_slot)
           return get_room_page_id(room)
         else
           raise Ubcbooker::Error::NoAvailableRoom.new(options[:time])
@@ -25,23 +27,27 @@ module Ubcbooker
       end
 
       def login
+        spinner = get_spinner("Logging into CWL")
         booking_url = BOOKING_URL[:cs]
         @agent.get(booking_url) do |page|
           login_page = page.link_with(text: "CWL Login Redirect").click
-          return login_ubc_cwl(login_page)
+          login_ubc_cwl(login_page)
         end
+        spinner.success("Done!") # Stop animation
       end
 
-      def submit_booking(room, book_date, book_slot)
+      def submit_booking(room, title, book_date, book_slot)
+        spinner = get_spinner("Submitting booking request")
         booking_form = @agent.get(CS_BOOK_URL).forms[1]
-        booking_form["title"] = options[:name]
+        booking_form["title"] = title
         book_date_str = book_date.strftime("%Y/%m/%d")  # ex 2018/03/08
         select_room_option(booking_form, room)
         booking_form["field_date[und][0][value][date]"] = book_date_str
         booking_form["field_date[und][0][value][time]"] = time_to_ampm(book_slot.min)
         booking_form["field_date[und][0][value2][date]"] = book_date_str
         booking_form["field_date[und][0][value2][time]"] = time_to_ampm(book_slot.max)
-        # booking_form.submit
+        spinner.success("Done!")
+        booking_form.submit
       end
 
       # Select the form otpion with right room id
@@ -61,6 +67,7 @@ module Ubcbooker
 
       def batch_request(room_list, book_date)
         cookie = @agent.cookies.join("; ")
+        spinner = get_spinner("Checking room availabilities")
 
         hydra = Typhoeus::Hydra.new
         requests = room_list.map do |room_id|
@@ -70,12 +77,13 @@ module Ubcbooker
           request
         end
         hydra.run # Start requests
+        spinner.success("Done!")
         return typhoeus_to_mechanize(requests)
       end
 
-      def get_room_cal_url(book_date, room)
-        if CS_ROOMS.include?(room)
-          room_url = CS_ROOM_BASE_URL + "ICCS" + room
+      def get_room_cal_url(book_date, room_id)
+        if CS_ROOMS.include?(room_id)
+          room_url = CS_ROOM_BASE_URL + "ICCS" + room_id
           if is_next_month(book_date)
             today = Date.today
             month_query = "?month=" + today.year + "-" + (today.month + 1)
@@ -136,6 +144,12 @@ module Ubcbooker
         date_div_base = "calendar_space_entity_project_room-"
         date_div_base += "#{date.year}-#{date.strftime("%m")}-#{date.strftime("%d")}-0"
         return date_div_base
+      end
+
+      def get_spinner(text)
+        spinner = ::TTY::Spinner.new("[:spinner] #{text} ...", format: :dots)
+        spinner.auto_spin # Automatic animation with default interval
+        return spinner
       end
 
       # =========================

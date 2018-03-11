@@ -1,5 +1,6 @@
 require "pry"
 require "business_time"
+require "tty-spinner"
 require "mechanize"
 require "typhoeus"
 require "obscenity"

@@ -6,6 +6,7 @@ module Ubcbooker
     # Maybe check by seeing if the CWL link pops up after GET
     def initialize
       @config = Ubcbooker::Config.new
+      @options = nil
     end
 
     def ask_config
@@ -107,7 +108,10 @@ module Ubcbooker
       ]
 
       begin
-        return parse_options
+        spinner = get_spinner("Verifying inputs")
+        options = parse_options
+        spinner.success("Done!") # Stop animation
+        return options
       rescue OptionParser::MissingArgument
         puts "Error: Missing Option\n".red <<
           "One or more of required option are missing values\n" <<
@@ -135,6 +139,12 @@ module Ubcbooker
       return scraper_client.new(username, password)
     end
 
+    def get_spinner(text)
+      spinner = ::TTY::Spinner.new("[:spinner] #{text} ...", format: :dots)
+      spinner.auto_spin # Automatic animation with default interval
+      return spinner
+    end
+
     def start
       @options = get_options
       ask_config if !@config.defined? || @options[:update]
@@ -145,7 +155,7 @@ module Ubcbooker
                             @config.account["password"])
       begin
         room_id = @client.book(@options)
-        puts "SUCCESS #{room_id} booked!".green
+        puts "Success! #{room_id} is booked".green
       rescue Ubcbooker::Error::NoAvailableRoom => e
         puts e.message
       end
