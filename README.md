@@ -21,7 +21,7 @@ And then execute:
 ## Usage
 
 ```
-$ ubcbooker --helj
+$ ubcbooker --help
 
 Usage: ubcbooker [options]
     -b, --building BUILDING          Specify which department to book rooms from
@@ -38,6 +38,7 @@ ex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'
 ```
 
 Currently this app supports project rooms in cs (Commputer Science).
+
 Feel free to send a PR that supports your department's rooms.
 
 ## Development
