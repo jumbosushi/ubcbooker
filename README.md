@@ -4,7 +4,11 @@ CLI tool to book project rooms in UBC
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install it as:
+
+    $ gem install ubcbooker
+
+For use in your application, add this line to your Gemfile:
 
 ```ruby
 gem 'ubcbooker'
@@ -14,21 +18,18 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install ubcbooker
-
 ## Usage
 
-Rename `sample.yml` to `config.yml` with correct auth info to get started
-
 ```
-# Call help
-$ ubcbooker -h
 # Book Computer Science project rooms
 $ ubcbooker cs
 # Book Sauder project rooms
 $ ubcbooker sauder
+```
+
+```
+# Call help
+$ ubcbooker -h
 ```
 
 ## Development
