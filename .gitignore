@@ -2,6 +2,7 @@
 *.gem
 *.rbc
 lib/ubcbooker/config.yml
+spec/config.yml
 /.config
 /coverage/
 /InstalledFiles

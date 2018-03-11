@@ -7,16 +7,6 @@ module Ubcbooker
       @options = nil
     end
 
-    def ask_config
-      print "Your CWL username: "
-      username = gets.chomp
-      print "Your CWL password: "
-      # Hide the password input
-      password = STDIN.noecho(&:gets).chomp
-      @config.write(username, password)
-      puts
-    end
-
     def parse_options
 
       # This will hold the options we parse
@@ -75,7 +65,7 @@ module Ubcbooker
         end
 
         parser.on("-u", "--update", "Update username and password") do |v|
-          ask_config
+          @config.ask
           exit(0)
         end
 
@@ -140,7 +130,7 @@ module Ubcbooker
 
     def start
       @options = get_options
-      ask_config if !@config.defined?
+      @config.ask if !@config.defined?
 
       @client = get_scraper(@options[:department],
                             @config.account["username"],
