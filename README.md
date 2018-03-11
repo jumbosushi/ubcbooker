@@ -2,6 +2,8 @@
 
 CLI tool to book project rooms in UBC
 
+![Demo](https://i.imgur.com/UhT9zKJ.gif)
+
 ## Installation
 
 Install it as:
