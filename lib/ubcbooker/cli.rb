@@ -18,6 +18,10 @@ module Ubcbooker
     end
 
     def parse_options
+
+      spinner = get_spinner("Verifying inputs")
+      spinner.success("Done!") # Stop animation
+
       # This will hold the options we parse
       options = {
         save: false,
@@ -106,10 +110,7 @@ module Ubcbooker
       ]
 
       begin
-        spinner = get_spinner("Verifying inputs")
-        options = parse_options
-        spinner.success("Done!") # Stop animation
-        return options
+        return parse_options
       rescue OptionParser::MissingArgument
         puts "Error: Missing Option\n".red <<
           "One or more of required option are missing values\n" <<
