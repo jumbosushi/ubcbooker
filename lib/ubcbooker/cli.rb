@@ -110,8 +110,8 @@ module Ubcbooker
         return parse_options
       rescue OptionParser::MissingArgument
         puts "Error: Missing Option\n".red <<
-          "One or more of required option are missing values\n".brown <<
-          "Please check if options -b, -d, -n, and -t all have values passed".brown
+          "One or more of required option are missing values\n" <<
+          "Please check if options -b, -d, -n, and -t all have values passed"
         exit(1)
       rescue *option_errors => e
         puts e.message
@@ -139,13 +139,16 @@ module Ubcbooker
       @options = get_options
       ask_config if !@config.defined? || @options[:update]
       exit(0) if @options[:update]
-      binding.pry
 
       @client = get_scraper(@options[:department],
                             @config.account["username"],
                             @config.account["password"])
-      @client.book(@options)
-      puts "SUCCESS! ROOM BOOKED"
+      begin
+        room_id = @client.book(@options)
+        puts "SUCCESS #{room_id} booked!".green
+      rescue Ubcbooker::Error::NoAvailableRoom => e
+        puts e.message
+      end
     end
   end
 end
