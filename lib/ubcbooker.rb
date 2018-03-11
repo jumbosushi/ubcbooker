@@ -11,7 +11,7 @@ require "yaml"
 module Ubcbooker
   BOOKING_URL = {
     cs: "https://my.cs.ubc.ca/docs/project-rooms-and-dlc",
-    sauder_ugrad: "https://booking.sauder.ubc.ca/ugr/cwl-login",
+    # sauder_ugrad: "https://booking.sauder.ubc.ca/ugr/cwl-login",
   }
 end
 

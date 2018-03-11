@@ -145,7 +145,7 @@ module Ubcbooker
       end
 
       def get_spinner(text)
-        spinner = ::TTY::Spinner.new("[:spinner] #{text} ...", format: :dots)
+        spinner = ::TTY::Spinner.new("[:spinner] #{text} ... ", format: :dots)
         spinner.auto_spin # Automatic animation with default interval
         return spinner
       end

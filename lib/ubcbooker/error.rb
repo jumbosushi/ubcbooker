@@ -13,7 +13,7 @@ module Ubcbooker
       attr_reader :message, :date
       def initialize(date = "unknown")
         @date = date
-        @message = "Error: UnsupportedDate\n".red <<
+        @message = "Error: Unsupported Date\n".red <<
           "Date must not be:\n" <<
           "  - in the past\n" <<
           "  - in a weekend\n" <<
@@ -28,7 +28,7 @@ module Ubcbooker
       attr_reader :message, :time
       def initialize(time = "unknown")
         @time = time
-        @message = "Error: UnsupportedTime\n".red <<
+        @message = "Error: Unsupported Time\n".red <<
           "Please check if the time is in the format of HH:MM-HH:MM\n" <<
           "Ex. 11:00-13:00"
         super
@@ -59,9 +59,9 @@ module Ubcbooker
 
     class LoginFailed < StandardError
       attr_reader :message
-      def initialize(time_range)
-        @message = "Login Failed :/\n".red <<
-          "Please try logging in with different username / password\n" <<
+      def initialize
+        @message = "\nLogin Failed :/\n".red <<
+          "Please try logging in with a different username or password\n" <<
           "You can use `-u` flag to update saved accout info"
         super
       end

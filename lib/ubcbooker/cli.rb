@@ -19,13 +19,8 @@ module Ubcbooker
 
     def parse_options
 
-      spinner = get_spinner("Verifying inputs")
-      spinner.success("Done!") # Stop animation
-
       # This will hold the options we parse
       options = {
-        save: false,
-        update: false,
         name: nil,
         date: nil,
         time: nil,
@@ -70,11 +65,6 @@ module Ubcbooker
             raise Ubcbooker::Error::ProfaneName.new(v)
           end
         end
-
-        parser.on("-s", "--save", "Save username and password") do |v|
-          options[:save] = true
-        end
-
         parser.on("-t", "--time TIME", String,
                   "Specify time to book rooms for (HH:MM-HH:MM)") do |v|
           if CLI::Validator.is_valid_time(v)
@@ -85,7 +75,8 @@ module Ubcbooker
         end
 
         parser.on("-u", "--update", "Update username and password") do |v|
-          options[:update] = true
+          ask_config
+          exit(0)
         end
 
         parser.on("-v", "--version", "Show version") do |v|
@@ -93,6 +84,9 @@ module Ubcbooker
           exit(0)
         end
       end.parse!
+
+      spinner = get_spinner("Verifying inputs")
+      spinner.success("Done!") # Stop animation
 
       if CLI::Validator.is_required_missing(options)
         raise OptionParser::MissingArgument
@@ -139,15 +133,14 @@ module Ubcbooker
     end
 
     def get_spinner(text)
-      spinner = ::TTY::Spinner.new("[:spinner] #{text} ...", format: :dots)
+      spinner = ::TTY::Spinner.new("[:spinner] #{text} ... ", format: :dots)
       spinner.auto_spin # Automatic animation with default interval
       return spinner
     end
 
     def start
       @options = get_options
-      ask_config if !@config.defined? || @options[:update]
-      exit(0) if @options[:update]
+      ask_config if !@config.defined?
 
       @client = get_scraper(@options[:department],
                             @config.account["username"],
