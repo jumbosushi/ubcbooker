@@ -57,10 +57,14 @@ module Ubcbooker
       end
     end
 
-    class InvalidRoom < StandardError
-    end
-
     class LoginFailed < StandardError
+      attr_reader :message
+      def initialize(time_range)
+        @message = "Login Failed :/\n".red <<
+          "Please try logging in with different username / password\n" <<
+          "You can use `-u` flag to update saved accout info"
+        super
+      end
     end
   end
 end

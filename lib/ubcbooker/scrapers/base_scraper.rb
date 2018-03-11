@@ -33,10 +33,8 @@ module Ubcbooker
           else
             raise Ubcbooker::Error::LoginFailed
           end
-        rescue Ubcbooker::Error::LoginFailed
-          puts "Login Failed :/".red
-          puts "Please try logging in with different username / password".brown
-          puts "You can use `-u` flag to update saved accout info".brown
+        rescue Ubcbooker::Error::LoginFailed => e
+          puts e.message
           exit(1)
         end
       end

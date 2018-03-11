@@ -91,8 +91,6 @@ module Ubcbooker
           else
             return room_url
           end
-        else
-          raise Ubcbooker::Error::InvalidRoom
         end
       end
 
