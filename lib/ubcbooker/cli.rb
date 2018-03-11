@@ -18,47 +18,12 @@ module Ubcbooker
       puts
     end
 
-    def is_valid_department(d)
-      return BOOKING_URL.keys.include?(d.to_sym)
-    end
-
-    # TODO: Return error msg explaining this
-    def is_valid_date(d)
-      date = nil
-      begin
-        date = Date.parse(d)
-        # Expect MM/DD
-      rescue ArgumentError
-        return false
-      end
-      return /^\d\d\/\d\d$/.match?(d) &&          # Match format
-             date.weekday? &&  # Not on weekend
-             !date.past? &&                       # Not in the past
-             (date < Date.today + 7)              # Within a week
-    end
-
-    def is_valid_time(t)
-      if /^\d\d:\d\d-\d\d:\d\d$/.match?(t)
-        times = t.split("-")
-        times.each do |time|
-          begin
-            DateTime.parse(time)
-            # Expect HH:MM
-          rescue ArgumentError
-            return false
-          end
-        end
-        return true
-      else
-        return false
-      end
-    end
-
     def parse_options
       # This will hold the options we parse
       options = {
         save: false,
         update: false,
+        name: nil,
         date: nil,
         time: nil,
         department: nil,
@@ -66,44 +31,50 @@ module Ubcbooker
 
       # TODO: Change department to building
       OptionParser.new do |parser|
-        parser.on("-b", "--building [BUILDING]", String,
-                  "Specify which department to book rooms from") do |v|
-          if is_valid_department(v)
+        parser.on("-b", "--building BUILDING", String, "Specify which department to book rooms from") do |v|
+          if CLI::Validator.is_valid_department(v)
             options[:department] = v
           else
             raise Ubcbooker::Error::UnsupportedDepartment.new(v)
           end
         end
 
-        parser.on("-d", "--date [DATE]", String,
-                  "Specify date to book rooms for (MM/DD)") do |v|
-          if is_valid_date(v)
+        parser.on("-d", "--date DATE", String, "Specify date to book rooms for (MM/DD)") do |v|
+          if CLI::Validator.is_valid_date(v)
             options[:date] = v
           else
             raise Ubcbooker::Error::UnsupportedDate.new(v)
           end
         end
 
-        parser.on("-h", "--help", "Show this help message") do ||
+        parser.on("-h", "--help", "Show this help message") do
           puts parser
           puts
-          puts "ex. Book a project room in CS on March 3th for 11am to 1pm"
-          puts "    >ubcbooker -b cs -d 03/05 -t 11:00-13:00"
+          puts "ex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'"
+          puts "    $>ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00"
           exit(0)
         end
 
-        parser.on("-l", "--list", "List supported departments") do ||
+        parser.on("-l", "--list", "List supported departments") do |v|
           @config.print_supported_departments
           exit(0)
+        end
+
+        parser.on("-n", "--name NAME", String, "Name of the booking") do |v|
+          if CLI::Validator.is_valid_name(v)
+            options[:name] = v
+          else
+            raise Ubcbooker::Error::ProfaneName.new(v)
+          end
         end
 
         parser.on("-s", "--save", "Save username and password") do |v|
           options[:save] = true
         end
 
-        parser.on("-t", "--time [TIME]", String,
+        parser.on("-t", "--time TIME", String,
                   "Specify time to book rooms for (HH:MM-HH:MM)") do |v|
-          if is_valid_time(v)
+          if CLI::Validator.is_valid_time(v)
             options[:time] = v
           else
             raise Ubcbooker::Error::UnsupportedTime.new(v)
@@ -114,27 +85,38 @@ module Ubcbooker
           options[:update] = true
         end
 
-        parser.on("-v", "--version", "Show version") do ||
+        parser.on("-v", "--version", "Show version") do |v|
           puts Ubcbooker::VERSION
           exit(0)
         end
       end.parse!
 
+      if CLI::Validator.is_required_missing(options)
+        raise OptionParser::MissingArgument
+      end
+
       return options
     end
 
     def get_options
+      option_errors = [
+        Ubcbooker::Error::UnsupportedDepartment,
+        Ubcbooker::Error::UnsupportedTime,
+        Ubcbooker::Error::UnsupportedDate,
+        Ubcbooker::Error::ProfaneName,
+      ]
+
       begin
         return parse_options
-      rescue Ubcbooker::Error::UnsupportedDepartment => e
-        puts "\"#{e.department}\" is an unsupported department\n".red <<
-          "Check supported departments with `ubcbooker -l`".brown
       rescue OptionParser::MissingArgument
-        puts "Missing a department option\n".red <<
-          "Try calling with `ubcbooker -d <DEPARTMENT>`\n".brown <<
-          "Check supported departments with `ubcbooker -l`".brown
+        puts "Error: Missing Option\n".red <<
+          "One or more of required option are missing values\n".brown <<
+          "Please check if options -b, -d, -n, and -t all have values passed".brown
+        exit(1)
+      rescue *option_errors => e
+        puts e.message
+        exit(1)
       end
-      exit(1)
     end
 
     def get_department_scraper(department)
@@ -144,7 +126,7 @@ module Ubcbooker
       when "sauder_ugrad"
         return Ubcbooker::Scraper::SauderUgrad
       else
-        raise Ubcbooker::Error::UnsupportedDepartment
+        raise Ubcbooker::Error::UnsupportedDepartment.new(department)
       end
     end
 
@@ -157,6 +139,7 @@ module Ubcbooker
       @options = get_options
       ask_config if !@config.defined? || @options[:update]
       exit(0) if @options[:update]
+      binding.pry
 
       @client = get_scraper(@options[:department],
                             @config.account["username"],
