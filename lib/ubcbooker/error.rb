@@ -4,7 +4,7 @@ module Ubcbooker
       attr_reader :message
       def initialize(department = "unknown")
         @message = "\"#{department}\" is an unsupported department\n".red <<
-          "Check supported departments with `ubcbooker -l`".brown
+          "Check supported departments with `ubcbooker -l`"
         super
       end
     end
@@ -14,12 +14,12 @@ module Ubcbooker
       def initialize(date = "unknown")
         @date = date
         @message = "Error: UnsupportedDate\n".red <<
-          "Date must not be:\n".brown <<
-          "  - in the past\n".brown <<
-          "  - in a weekend\n".brown <<
-          "  - beyond a week\n".brown <<
-          "Please check if the time is in the format of MM/DD\n".brown <<
-          "Ex. 03/05".brown
+          "Date must not be:\n" <<
+          "  - in the past\n" <<
+          "  - in a weekend\n" <<
+          "  - beyond a week\n" <<
+          "Please check if the time is in the format of MM/DD\n" <<
+          "Ex. 03/05"
         super
       end
     end
@@ -29,8 +29,8 @@ module Ubcbooker
       def initialize(time = "unknown")
         @time = time
         @message = "Error: UnsupportedTime\n".red <<
-          "Please check if the time is in the format of HH:MM-HH:MM\n".brown <<
-          "Ex. 11:00-13:00".brown
+          "Please check if the time is in the format of HH:MM-HH:MM\n" <<
+          "Ex. 11:00-13:00"
         super
       end
     end
@@ -40,8 +40,19 @@ module Ubcbooker
       def initialize(name = "unknown")
         @name = name
         @message = "Error: Name includes profanity\n".red <<
-          "Remember that other students might see the booking name\n".brown <<
-          "Please try again with a different name".brown
+          "Remember that other students might see the booking name\n" <<
+          "Please try again with a different name"
+        super
+      end
+    end
+
+    class NoAvailableRoom < StandardError
+      attr_reader :message, :time_range
+      def initialize(time_range)
+        @time_range = time_range
+        @message = "Error: No Available Room\n".red <<
+          "There are no room available for #{time_range} range\n" <<
+          "Please try again with a different time range"
         super
       end
     end
