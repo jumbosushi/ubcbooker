@@ -4,7 +4,17 @@ module Ubcbooker
 
     def initialize
       @config_path = File.expand_path("../config.yml", __FILE__)
+      if !File.exist?(@config_path)
+        create_config_file(@config_path)
+      end
+
       @account = YAML.load_file(@config_path)
+    end
+
+    def create_config_file(config_path)
+      File.open(config_path, "w") do |f|
+        f.write("---\nusername: sample\npassword: sample")
+      end
     end
 
     def write(username, password)
@@ -23,7 +33,7 @@ module Ubcbooker
     end
 
     def defined?
-      return @account["username"] != "hoge" && @account["password"] != "hoge"
+      return @account["username"] != "sample" && @account["password"] != "sample"
     end
   end
 end
