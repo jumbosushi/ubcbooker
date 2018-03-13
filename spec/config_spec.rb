@@ -1,4 +1,4 @@
-RSpec.describe Ubcbooker::CLI do
+RSpec.describe Ubcbooker::Config do
 
   let(:config) { Ubcbooker::Config.new }
   let(:config_path) { config.get_config_path }
