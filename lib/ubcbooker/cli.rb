@@ -37,9 +37,8 @@ module Ubcbooker
 
         parser.on("-h", "--help", "Show this help message") do
           puts parser
-          puts
-          puts "ex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'"
-          puts "    $>ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00"
+          puts "\nex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'\n" <<
+               "    $ ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00"
           exit(0)
         end
 
@@ -79,7 +78,7 @@ module Ubcbooker
       spinner.success("Done!") # Stop animation
 
       if CLI::Validator.is_required_missing(options)
-        raise OptionParser::MissingArgument
+        raise Ubcbooker::Error::MissingRequired
       end
 
       return options
@@ -91,15 +90,11 @@ module Ubcbooker
         Ubcbooker::Error::UnsupportedTime,
         Ubcbooker::Error::UnsupportedDate,
         Ubcbooker::Error::ProfaneName,
+        Ubcbooker::Error::MissingRequired,
       ]
 
       begin
         return parse_options
-      rescue OptionParser::MissingArgument
-        puts "Error: Missing Option\n".red <<
-          "One or more of required option are missing values\n" <<
-          "Please check if options -b, -d, -n, and -t all have values passed"
-        exit(1)
       rescue *option_errors => e
         puts e.message
         exit(1)

@@ -35,6 +35,17 @@ module Ubcbooker
       end
     end
 
+    class MissingRequired < StandardError
+      attr_reader :message, :time
+      def initialize()
+        @message = "Error: Missing Option\n".red <<
+          "One or more of required option are missing values\n" <<
+          "Please check if options -b, -d, -n, and -t all have values passed"
+        super
+      end
+    end
+
+
     class ProfaneName < StandardError
       attr_reader :message, :name
       def initialize(name = "unknown")
