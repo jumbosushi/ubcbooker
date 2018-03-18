@@ -49,7 +49,7 @@ ex. Book a room in CS from 11am to 1pm on March 5th with the name 'Study Group'
     $> ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00
 ```
 
-Currently this app supports project rooms in cs (Commputer Science). Run `ubcbooker -l` to check the latest supported departments.
+Currently this app supports project rooms in cs (Computer Science). Run `ubcbooker -l` to check the latest supported departments.
 
 Feel free to send a PR that supports your department's rooms.
 
@@ -67,4 +67,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Ubcbooker project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/jumbosushi/ubcbooker/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Ubcbooker project’s codebase, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/jumbosushi/ubcbooker/blob/master/CODE_OF_CONDUCT.md).
