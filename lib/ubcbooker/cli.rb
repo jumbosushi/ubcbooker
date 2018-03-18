@@ -124,6 +124,11 @@ module Ubcbooker
     end
 
     def start
+      book_errors = [
+        Ubcbooker::Error::NoAvailableRoom,
+        Ubcbooker::Error::BookingFailed,
+      ]
+
       @options = get_options
       @config.ask if !@config.defined?
 
@@ -133,8 +138,9 @@ module Ubcbooker
       begin
         room_id = @client.book(@options)
         puts "Success! #{room_id} is booked".green
-      rescue Ubcbooker::Error::NoAvailableRoom => e
+      rescue *book_errors => e
         puts e.message
+        exit(1)
       end
     end
   end

@@ -68,6 +68,15 @@ module Ubcbooker
       end
     end
 
+    class BookingFailed < StandardError
+      attr_reader :message
+      def initialize
+        @message = "\nBooking Failed :/\n".red <<
+          "Please raise an issue on GitHub"
+        super
+      end
+    end
+
     class LoginFailed < StandardError
       attr_reader :message
       def initialize
