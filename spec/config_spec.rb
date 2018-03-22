@@ -22,8 +22,8 @@ RSpec.describe Ubcbooker::Config do
       it "save params locally" do
         Gem.win_platform = true
         config.save_credentials("testuser", "testpass")
-        expect(keyring.get_password("ubcbooker", "username")).to eq(nil)
-        expect(keyring.get_password("ubcbooker", "password")).to eq(nil)
+        expect(keyring.get_password("ubcbooker", "username")).to eq(false)
+        expect(keyring.get_password("ubcbooker", "password")).to eq(false)
         expect(config.get_username).to eq("testuser")
         expect(config.get_password).to eq("testpass")
         Gem.win_platform = false
