@@ -11,6 +11,7 @@ RSpec.describe Ubcbooker::CLI do
   end
 
   let(:cli) { Ubcbooker::CLI.new }
+  let(:tmrw_date) { (Date.today + 1).strftime("%m/%d") }
 
   describe "#get_department_scraper" do
     context "when param is cs" do
@@ -30,27 +31,28 @@ RSpec.describe Ubcbooker::CLI do
   end
 
   describe "#parse_options" do
-    context "when ARGV is valid"
-    it "returns valid options" do
-      ARGV = ["-b", "cs",
-              "-n", "test_name",
-              "-d", "03/15",
-              "-t", "15:30-17:00"]
-      expected_options = {
-        name: "test_name",
-        date: "03/15",
-        time: "15:30-17:00",
-        department: "cs",
-      }
-      result = cli.parse_options
-      expect(result).to eq(expected_options)
+    context "when ARGV is valid" do
+      it "returns valid options" do
+        ARGV = ["-b", "cs",
+                "-n", "test_name",
+                "-d", tmrw_date,
+                "-t", "15:30-17:00"]
+        expected_options = {
+          name: "test_name",
+          date: tmrw_date,
+          time: "15:30-17:00",
+          department: "cs",
+        }
+        result = cli.parse_options
+        expect(result).to eq(expected_options)
+      end
     end
 
     context "when required options are missing" do
       it "raise Ubcbooker::Error::MissingRequired" do
         # Missing -n flag
         ARGV = ["-b", "cs",
-                "-d", "03/15",
+                "-d", tmrw_date,
                 "-t", "15:30-17:00"]
         expect do
           cli.parse_options
@@ -63,7 +65,7 @@ RSpec.describe Ubcbooker::CLI do
         # Missing -n flag
         ARGV = ["-b", "booziogy",
                 "-n", "test_name",
-                "-d", "03/15",
+                "-d", tmrw_date,
                 "-t", "15:30-17:00"]
         expect do
           cli.parse_options
@@ -76,7 +78,7 @@ RSpec.describe Ubcbooker::CLI do
         # Missing -n flag
         ARGV = ["-b", "cs",
                 "-n", "fucking group work",
-                "-d", "03/15",
+                "-d", tmrw_date,
                 "-t", "15:30-17:00"]
         expect do
           cli.parse_options
