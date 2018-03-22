@@ -28,7 +28,8 @@ And then execute:
 $ ubcbooker -b cs -n 'Study Group' -d 03/05 -t 11:00-13:00
 ```
 
-When you first run the command it will ask for your CWL account auth info. This is saved locally within the gem as `config.yml`. You can look at [sample.yml](https://github.com/jumbosushi/ubcbooker/blob/master/lib/ubcbooker/sample.yml) to understand what it will look like.
+When you first run the command it will ask for your CWL account auth info. This is saved locally within keyring (if you're using linux) or keychain (if you're using osx) through [keyring gem](https://github.com/jheiss/keyring). Note that saving password is not supported on Windows at the moment.
+
 
 Run `ubcbooker -u` to update the CWL auth info.
 
