@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "typhoeus", "~> 1.1"
   spec.add_dependency "obscenity", "~> 1.0.2"
   spec.add_dependency "tty-spinner", "~> 0.7.0"
+  spec.add_dependency "keyring", "~> 0.4.1"
 
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"

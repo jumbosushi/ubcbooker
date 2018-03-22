@@ -1,60 +1,49 @@
 RSpec.describe Ubcbooker::Config do
+  require "keyring"
+  require "rubygems/test_case"
 
   let(:config) { Ubcbooker::Config.new }
-  let(:config_path) { config.get_config_path }
+  let(:keyring) { Keyring.new }
 
-  describe "#initialize" do
-    context "when there's no config file" do
-      it "creates a new config file" do
-        if File.exist?(config_path)
-          FileUtils.rm(config_path)
-        end
+  after(:each) do
+    config.delete_credentials
+  end
 
-        expect(File.exist?(config_path)).to be(false)
-        temp_config = Ubcbooker::Config.new
-        expect(File.exist?(config_path)).to be(true)
+  describe "#save_credentials" do
+    context "running on osx / linux" do
+      it "save params into keyring" do
+        config.save_credentials("testuser", "testpass")
+        expect(keyring.get_password("ubcbooker", "username")).to eq("testuser")
+        expect(keyring.get_password("ubcbooker", "password")).to eq("testpass")
+      end
+    end
+
+    context "running on windows" do
+      it "save params locally" do
+        Gem.win_platform = true
+        config.save_credentials("testuser", "testpass")
+        expect(keyring.get_password("ubcbooker", "username")).to eq(nil)
+        expect(keyring.get_password("ubcbooker", "password")).to eq(nil)
+        expect(config.get_username).to eq("testuser")
+        expect(config.get_password).to eq("testpass")
+        Gem.win_platform = false
       end
     end
   end
 
-  describe "#write" do
-    it "write params into config file" do
-      config.write("testuser", "testpass")
-      test_config = YAML.load_file(config_path)
-      expect(test_config["username"]).to eq("testuser")
-      expect(test_config["password"]).to eq("testpass")
-    end
-  end
-
-
   describe "#defined?" do
-    context "when there's no config file" do
+    context "when #ask has not been called before" do
       it "return false" do
-        if File.exist?(config_path)
-          FileUtils.rm(config_path)
-        end
-
         expect(config.defined?).to equal(false)
       end
     end
 
-    context "when there's config file" do
-      context "when there's default values" do
-        it "return false" do
-          allow(config).to receive(:gets).and_return("sample")
-          allow(STDIN).to receive(:noecho).and_return("sample")
-          config.ask
-          expect(config.defined?).to equal(false)
-        end
-      end
-
-      context "when custom values" do
-        it "return true" do
-          allow(config).to receive(:gets).and_return("testuser")
-          allow(STDIN).to receive(:noecho).and_return("testuser")
-          config.ask
-          expect(config.defined?).to equal(true)
-        end
+    context "when #ask has been called before" do
+      it "return true" do
+        allow(config).to receive(:gets).and_return("testuser")
+        allow(STDIN).to receive(:noecho).and_return("testuser")
+        config.ask
+        expect(config.defined?).to equal(true)
       end
     end
   end

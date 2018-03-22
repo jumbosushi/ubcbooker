@@ -7,6 +7,7 @@ require "obscenity"
 require "io/console" # For handling password
 require "optparse"
 require "yaml"
+require "keyring"
 
 module Ubcbooker
   BOOKING_URL = {

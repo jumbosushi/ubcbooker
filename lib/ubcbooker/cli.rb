@@ -130,11 +130,13 @@ module Ubcbooker
       ]
 
       @options = get_options
-      @config.ask if !@config.defined?
+      if !@config.defined? || @config.is_windows?
+        @config.ask
+      end
 
       @client = get_scraper(@options[:department],
-                            @config.account["username"],
-                            @config.account["password"])
+                            @config.get_username,
+                            @config.get_password)
       begin
         room_id = @client.book(@options)
         puts "Success! #{room_id} is booked".green
