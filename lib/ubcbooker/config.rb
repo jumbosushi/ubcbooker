@@ -1,7 +1,5 @@
 module Ubcbooker
   class Config
-    attr_accessor :account
-
     # We use system keyring for storing cwl credentials
     # https://askubuntu.com/questions/32164/what-does-a-keyring-do
     #
